@@ -19,11 +19,11 @@ task_id_control = 1
 def create_task():
     global task_id_control
     data = request.get_json()
-    new_task = Task(id=task_id_control,title=data.get("title"),description=data.get("description",""))
+    new_task = Task(id=task_id_control, title=data.get('title'), description=data.get("description",""))
     task_id_control += 1
     tasks.append(new_task)
     print(tasks)
-    return jsonify({"message" : "Nova tarefa criada com sucesso"})
+    return jsonify({"message" : "Nova tarefa criada com sucesso", "id": new_task.id})
 
 @app.route('/tasks',methods=['GET'])
 def get_tasks():
@@ -51,7 +51,7 @@ def update_task(id):
     for t in tasks:
         if t.id == id:
             task = t
-    print(task)
+            break
 
     if task == None:
         return jsonify({"message": "Não foi possível encontrar a Tarefa"}), 404
@@ -60,7 +60,6 @@ def update_task(id):
     task.title = data['title']
     task.description = data['description']
     task.completed = data['completed']
-    print(task)
     return jsonify({"message": "Tarefa atualizada com sucesso"})
 
 @app.route('/tasks/<int:id>', methods=['DELETE'])
